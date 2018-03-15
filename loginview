@@ -1,0 +1,46 @@
+@model zeba_LeaveApprovalSystem.Models.tblEmployee_1357370
+@{
+    ViewBag.Title = "Login";
+}
+
+<h2>Login</h2>
+@using (Html.BeginForm())
+{
+<table>
+    <tr>
+        <td>
+            @Html.LabelFor(a => a.supervisorid)
+
+        </td>
+        <td>
+            @Html.TextBoxFor(a => a.supervisorid)
+        </td>
+    </tr>
+    <tr>
+        <td>
+            @Html.LabelFor(a=>a.username)
+
+        </td>
+        <td>
+            @Html.TextBoxFor(a => a.username)
+        </td>
+    </tr>
+    <tr>
+        <td>
+            @Html.LabelFor(a => a.pass)
+
+        </td>
+        <td>
+            @Html.TextBoxFor(a => a.pass)
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <input type="submit" value="Login" class="btn-primary active" />
+        </td>
+    </tr>
+</table>
+
+
+}
+
