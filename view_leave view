@@ -1,0 +1,33 @@
+@model IEnumerable<zeba_LeaveApprovalSystem.Models.Aviewempleave_Result>
+
+    @{
+        ViewBag.Title = "Viewleave";
+        WebGrid grid = new WebGrid(Model);
+    }
+
+    <h2>Viewleave</h2>
+
+@grid.GetHtml(
+    tableStyle: " table table-bordered table-hover",
+    columns: new[]
+    {
+        grid.Column("leaveid","Emp Id"),
+        grid.Column("leavetype","Leave Type"),
+         grid.Column("leavereason","Leave Reason"),
+        grid.Column("leavestatus","Leave Status"),
+         grid.Column("remarks","Remarks"),
+        grid.Column("Leavedate","Leave Date"),
+
+        grid.Column(format:@<text>
+        @Html.ActionLink("Approve","appleave",new {lid=item.leaveid})
+
+        </text>),
+              grid.Column(format:@<text>
+                @Html.ActionLink("Reject","rejleave",new {lid=item.leaveid})
+
+            </text>)
+
+
+
+    }
+    )
