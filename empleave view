@@ -1,0 +1,25 @@
+@model IEnumerable<zeba_LeaveApprovalSystem.Models.Aviewleav_Result>
+
+@{
+    ViewBag.Title = "empleave";
+    WebGrid grid = new WebGrid(Model);
+}
+
+<h2>empleave</h2>
+@grid.GetHtml(
+    tableStyle:" table table-bordered table-hover",
+    columns:new[]
+    {
+        grid.Column("username","Emp Name"),
+        grid.Column("Leaves_Applied","LeavesApplied"),
+        grid.Column(format:@<text>
+@Html.ActionLink("View Pending Leave Details","Viewleave",new {id=item.emid})
+
+</text>
+            )
+
+    }
+
+
+    )
+
