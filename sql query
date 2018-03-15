@@ -1,0 +1,140 @@
+use DB01TMS68_1718
+create  table tblEmployee_1357370
+( empid int identity(100,1) primary key,
+username varchar(30),
+pass varchar(30),
+supervisorid int foreign key references tblEmployee_1357370(empid)
+)
+create table tblLeaves_1357370
+(leaveid int primary key identity(330,3),
+leavetype varchar(30),
+Leavedate date,
+emid int foreign key references tblEmployee_1357370(empid),
+leavereason varchar(60),
+leavestatus varchar(30) default 'pending',
+remarks varchar(90) default '  '
+)
+
+select * from tblLeaves_1357370
+
+ select * from tblEmployee_1357370
+ go
+  alter proc assi_lv
+  @username varchar(80)
+  as begin
+  declare @id int
+  set @id=(select  empid from  tblEmployee_1357370 where username=@username )
+   select  b.username,count(emid) as Leaves_Applied from tblLeaves_1357370 as a inner join tblEmployee_1357370 as b  on a.emid=b.empid where b.supervisorid=@id group by username
+  end
+  select  b.username,count(emid)  from tblLeaves_1357370 as a inner join tblEmployee_1357370 as b  on a.emid=b.empid where b.supervisorid=100 group by username
+
+ go
+ alter proc Alogin_z
+ (@sid int,
+ @username varchar(30),
+ @pass varchar(30),
+ @flag int out
+ )
+ as
+ begin
+ set @flag=(select Count(pass) from tblEmployee_1357370
+  where binary_checksum(username)=BINARY_CHECKSUM(@username) 
+  and BINARY_CHECKSUM(pass)=BINARY_CHECKSUM(@pass) and supervisorid=@sid)
+ end
+
+
+
+ exec Alogin_z 100,'sutha','sutha',0 
+ go
+alter  proc AAinsertemp
+ ( @user varchar(30),
+ @pass varchar(30),
+ @sid int,
+ @eid int out
+ )
+ as
+ begin
+ if(@sid in (select empid from tblEmployee_1357370 ))
+ begin
+ insert into tblEmployee_1357370(username,pass,supervisorid) values (@user,@pass,@sid)
+ set @eid=@@IDENTITY
+ end
+
+ end
+ exec AAinsertemp 'sutha','sutha',100,0
+ exec AAinsertemp 'uma','uma',100,0
+ exec AAinsertemp 'jowhara','jow',100,0
+ exec AAinsertemp 'zeba','zeba',100,0
+ exec AAinsertemp 'priya','priya',101,0
+ delete from tblEmployee_1357370 where  empid=104
+ 
+ go
+
+alter proc AAinsertleave
+ (
+
+ @type varchar(30),
+  @dat date,
+ @eid int,
+ @reson varchar(30)
+
+ )
+ as
+ begin
+ insert into tblLeaves_1357370 (leavetype,Leavedate,emid,leavereason) values (@type,@dat,@eid,@reson)
+
+ end
+  exec AAinsertleave 'sick','03/14/2018',101,'fever'
+   exec AAinsertleave 'sick','03/14/9999',102,'dengue'
+	exec AAinsertleave 'casual','03/25/2018',101,'Travel'
+	exec AAinsertleave 'casual','04/28/2018',103,'Travel'
+	exec AAinsertleave 'sick','03/14/2018',105,'fever'
+
+	 go
+	 create proc applea
+	 (@lid int
+	 )
+	 as
+	 begin
+	 update tblLeaves_1357370
+	 set leavestatus='Approve'
+	 where leaveid=@lid
+	 end
+		 update tblLeaves_1357370
+	 set leavestatus='pending'
+	
+	 select * from tblLeaves_1357370
+
+	 exec applea 339
+	 go
+	 	 create proc Arejlea
+	 (@lid int
+	 )
+	 as
+	 begin
+	 update tblLeaves_1357370
+	 set leavestatus='Rejected'
+	 where leaveid=@lid
+	 end
+	 go
+	alter proc Aviewleav
+	 (@sid int
+	 )
+	 as
+	 begin
+	select a.emid,count(emid ) as Leaves_Applied from tblLeaves_1357370 as a inner join  tblEmployee_1357370 as b on a.emid=b.empid 
+	  where b.supervisorid=@sid group by emid
+	 end
+	 exec Aviewleav 100
+
+	 go
+
+ alter proc Aviewempleave
+  (@id int
+  )
+  as
+  begin
+  select * from tblLeaves_1357370 where emid=@id and leavestatus='pending'
+  end
+ 
+	  
