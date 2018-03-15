@@ -1,0 +1,95 @@
+using System;
+using System.Collections.Generic;
+using System.Data.Entity.Core.Objects;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using zeba_LeaveApprovalSystem.Models;
+
+namespace zeba_LeaveApprovalSystem.Controllers
+{
+    public class leaveController : Controller
+    {
+        // GET: leave
+        public ActionResult Index()
+        {
+            return View();
+        }
+        public ActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Login(tblEmployee_1357370 obj)
+        {
+            DB01TMS68_1718Entities db = new DB01TMS68_1718Entities();
+            ObjectParameter o = new ObjectParameter("flag", 0);
+            db.Alogin_z(obj.supervisorid, obj.username, obj.pass, o);
+            //TempData["s"] = obj.supervisorid;
+          TempData["user"] = obj.username;
+            int f = Convert.ToInt32(o.Value);
+            if(f==1)
+            {
+                Response.Write("<script>alert('welcome User')</script>");
+                return RedirectToAction("empleave");
+            }
+            else
+            {
+                Response.Write("<script>alert('Invalid User')</script>");
+                return RedirectToAction("Login");
+            }
+        }
+
+
+     public ActionResult empleave()
+        {
+
+            DB01TMS68_1718Entities db = new DB01TMS68_1718Entities();
+            List<assi_lv_Result> lst = new List<assi_lv_Result>();
+            ////List<Aviewleav_Result> lst = new List<Aviewleav_Result>();
+            //////int id = Convert.ToInt32(TempData["s"]);
+            string user = TempData["user"].ToString();
+            //lst=db.Aviewleav(id).ToList();
+            lst = db.assi_lv(user).ToList();
+            return View(lst);
+        }
+
+        public ActionResult Viewleave(int id)
+        {
+
+            DB01TMS68_1718Entities db = new DB01TMS68_1718Entities();
+            List<Aviewempleave_Result> lst = new List<Aviewempleave_Result>();
+      
+            lst = db.Aviewempleave(id).ToList();
+            return View(lst);
+        }
+
+        public ActionResult rejleave(int lid)
+        {
+
+            DB01TMS68_1718Entities db = new DB01TMS68_1718Entities();
+
+
+            db.Arejlea(lid);
+            return RedirectToAction("Login");
+        }
+
+
+
+        public ActionResult appleave(int lid)
+        {
+
+            DB01TMS68_1718Entities db = new DB01TMS68_1718Entities();
+
+
+            db.applea(lid);
+             return RedirectToAction("Login");
+          
+        }
+
+
+
+
+    }
+}
